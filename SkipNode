@@ -1,0 +1,71 @@
+/**
+ * Node for the Skip List.
+ * 
+ * @param <K> Key type (must be Comparable)
+ * @param <V> Value type
+ * 
+ * @author {Your Name Here}
+ * @version {Put Something Here}
+ */
+public class SkipNode<K extends Comparable<K>, V> {
+    
+    private K key;
+    private V value;
+    private SkipNode<K, V>[] forward;
+
+    /**
+     * Create a node with given key, value, and level.
+     * 
+     * @param k Key
+     * @param v Value
+     * @param level Number of levels this node participates in
+     */
+    @SuppressWarnings("unchecked")
+    public SkipNode(K k, V v, int level) {
+        key = k;
+        value = v;
+        forward = new SkipNode[level + 1];
+    }
+
+    /**
+     * Get the key.
+     * @return The key
+     */
+    public K getKey() {
+        return key;
+    }
+
+    /**
+     * Get the value.
+     * @return The value
+     */
+    public V getValue() {
+        return value;
+    }
+
+    /**
+     * Get forward pointer at given level.
+     * @param level The level
+     * @return The node at that level's forward pointer
+     */
+    public SkipNode<K, V> getForward(int level) {
+        return forward[level];
+    }
+
+    /**
+     * Set forward pointer at given level.
+     * @param level The level
+     * @param node The node to point to
+     */
+    public void setForward(int level, SkipNode<K, V> node) {
+        forward[level] = node;
+    }
+
+    /**
+     * Get the number of levels this node has.
+     * @return Number of levels
+     */
+    public int getLevel() {
+        return forward.length - 1;
+    }
+}
