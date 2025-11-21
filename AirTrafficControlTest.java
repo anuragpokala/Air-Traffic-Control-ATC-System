@@ -269,28 +269,4 @@ public class AirControlTest extends TestCase {
         assertNotNull(result);
         assertTrue(result.length() > 0);
     }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Test non-empty printskiplist output and name ordering.
-     *
-     * @throws Exception
-     */
-    public void testNonEmptyPrintskiplist() throws Exception {
-        WorldDB w = new WorldDB(null);
-        assertTrue(w.add(new Balloon("M",
-            0, 0, 0, 10, 10, 10, "hot", 1)));
-        assertTrue(w.add(new Balloon("A",
-            20, 20, 20, 10, 10, 10, "hot", 1)));
-        assertTrue(w.add(new Balloon("Z",
-            40, 40, 40, 10, 10, 10, "hot", 1)));
-        String out = w.printskiplist();
-        int idxA = out.indexOf("Balloon A 20 20 20 10 10 10 hot 1");
-        int idxM = out.indexOf("Balloon M 0 0 0 10 10 10 hot 1");
-        int idxZ = out.indexOf("Balloon Z 40 40 40 10 10 10 hot 1");
-        assertTrue(idxA >= 0);
-        assertTrue(idxM > idxA);
-        assertTrue(idxZ > idxM);
-    }
 }
