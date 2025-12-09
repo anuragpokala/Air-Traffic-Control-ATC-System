@@ -10,6 +10,7 @@ public class WorldDB implements ATC {
     private final int worldSize = 1024;
     private Random rnd;
     private SkipList<String, AirObject> skipList;
+    private Bintree bintree;
 
     /**
      * Create a brave new World.
@@ -28,6 +29,7 @@ public class WorldDB implements ATC {
      */
     public void clear() {
         skipList = new SkipList<>(rnd);
+        bintree = new Bintree();
     }
 
     /**
@@ -51,6 +53,7 @@ public class WorldDB implements ATC {
             return false;
         }
         skipList.insert(name, a);
+        bintree.insert(a);
         return true;
     }
 
@@ -67,6 +70,7 @@ public class WorldDB implements ATC {
         if (removed == null) {
             return null;
         }
+        bintree.delete(removed);
         return removed.toString();
     }
 
@@ -99,10 +103,7 @@ public class WorldDB implements ATC {
      * @return String listing the Bintree nodes as specified.
      */
     public String printbintree() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("E (0, 0, 0, 1024, 1024, 1024) 0\n");
-        sb.append("1 Bintree nodes printed\n");
-        return sb.toString();
+        return bintree.print();
     }
 
     /**
@@ -153,7 +154,7 @@ public class WorldDB implements ATC {
      * @return String listing the AirObjects that participate in collisions.
      */
     public String collisions() {
-        return "The following collisions exist in the database:\n";
+        return bintree.collisions();
     }
 
     /**
@@ -170,16 +171,7 @@ public class WorldDB implements ATC {
         if (!isValidBox(x, y, z, xwid, ywid, zwid)) {
             return null;
         }
-        StringBuilder sb = new StringBuilder();
-        sb.append("The following objects intersect (");
-        sb.append(x).append(", ");
-        sb.append(y).append(", ");
-        sb.append(z).append(", ");
-        sb.append(xwid).append(", ");
-        sb.append(ywid).append(", ");
-        sb.append(zwid).append(")\n");
-        sb.append("1 nodes were visited in the bintree\n");
-        return sb.toString();
+        return bintree.intersect(x, y, z, xwid, ywid, zwid);
     }
 
     /**
