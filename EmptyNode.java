@@ -38,7 +38,14 @@ public class EmptyNode implements BinNode {
 
     @Override
     public String print(int x, int y, int z, int w, int h, int d, int level) {
-        return "E (" + x + ", " + y + ", " + z + ", " + w + ", " + h + ", " + d + ") " + count() + "\n";
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < level; i++) {
+            sb.append("  ");
+        }
+        sb.append("E (").append(x).append(", ").append(y).append(", ").append(z)
+          .append(", ").append(w).append(", ").append(h).append(", ").append(d)
+          .append(") ").append(count()).append("\n");
+        return sb.toString();
     }
 
     @Override
