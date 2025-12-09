@@ -4,7 +4,7 @@
  * @author {Your Name Here}
  * @version {Put Something Here}
  */
-public class AirObject {
+public class AirObject implements Comparable<AirObject> {
 
     private String name;
     private int xorig;
@@ -96,5 +96,14 @@ public class AirObject {
      */
     public String getName() {
         return name;
+    }
+
+    /**
+     * Compare against another AirObject by name.
+     * @param other The other AirObject
+     * @return Comparison result
+     */
+    public int compareTo(AirObject other) {
+        return this.name.compareTo(other.name);
     }
 }
