@@ -75,7 +75,11 @@ public class InternalNode implements BinNode {
         
         // Merge check
         if (left.isLeaf() && right.isLeaf()) {
-            if (left.count() + right.count() <= 1) {
+            int total = left.count() + right.count();
+            if (total == 0) {
+                return EmptyNode.EMPTY;
+            }
+            if (total == 1) {
                 LeafNode newLeaf = new LeafNode();
                 mergeInto(newLeaf, left);
                 mergeInto(newLeaf, right);
