@@ -171,13 +171,23 @@ public class LeafNode implements BinNode {
 
     @Override
     public void collisions(int x, int y, int z, int w, int h, int d, int level, StringBuilder sb) {
-        // Double loop
+        // Double loop - check all pairs of objects
         LNode i = head;
         while (i != null) {
             LNode j = i.next;
             while (j != null) {
                 if (objIntersect(i.data, j.data)) {
-                    sb.append(i.data.toString()).append(" and ").append(j.data.toString()).append(" collision\n");
+                    // Calculate intersection box origin
+                    int intX = Math.max(i.data.getXorig(), j.data.getXorig());
+                    int intY = Math.max(i.data.getYorig(), j.data.getYorig());
+                    int intZ = Math.max(i.data.getZorig(), j.data.getZorig());
+                    
+                    // Only report if intersection origin is within this leaf's bounds
+                    if (intX >= x && intX < x + w &&
+                        intY >= y && intY < y + h &&
+                        intZ >= z && intZ < z + d) {
+                        sb.append(i.data.getName()).append(" and ").append(j.data.getName()).append(" collision\n");
+                    }
                 }
                 j = j.next;
             }
