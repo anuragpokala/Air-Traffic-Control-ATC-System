@@ -8,6 +8,10 @@
  */
 public class EmptyNode implements BinNode {
 
+    /**
+     * A shared singleton instance representing an empty node in the binary tree.
+     * This instance is used in place of null to simplify tree operation logic.
+     */
     public static final EmptyNode THE_NODE = new EmptyNode();
 
     private EmptyNode() {
@@ -19,12 +23,14 @@ public class EmptyNode implements BinNode {
     }
 
     @Override
-    public BinNode remove(String name, SpatialBox box, RemovalContainer held, int level) {
+    public BinNode remove(String name, SpatialBox box, 
+        RemovalContainer held, int level) {
         return this; 
     }
 
     @Override
-    public void print(StringBuilder sb, SpatialBox box, int level, IntWrapper count) {
+    public void print(StringBuilder sb, SpatialBox box, 
+        int level, IntWrapper count) {
         sb.append(getIndent(level)).append("E ").append(box.toString())
           .append(" ").append(level).append("\r\n");
         count.increment();
@@ -35,7 +41,8 @@ public class EmptyNode implements BinNode {
     }
 
     @Override
-    public void findIntersections(SpatialBox query, SpatialBox box, StringBuilder sb, IntWrapper visits, int level) {
+    public void findIntersections(SpatialBox query, 
+        SpatialBox box, StringBuilder sb, IntWrapper visits, int level) {
         visits.increment();
     }
 
