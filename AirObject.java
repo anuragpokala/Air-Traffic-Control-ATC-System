@@ -1,8 +1,9 @@
 /**
  * Base class for all air objects with a bounding box and a name.
  *
- * @author {Your Name Here}
- * @version {Put Something Here}
+ * @author Anurag Pokala (anuragp34) 
+ * @author Parth Mehta (pmehta24)
+ * @version 12/3/2025
  */
 public class AirObject implements Comparable<AirObject> {
 
@@ -105,5 +106,23 @@ public class AirObject implements Comparable<AirObject> {
      */
     public int compareTo(AirObject other) {
         return this.name.compareTo(other.name);
+    }
+
+    // --- Validation Helpers ---
+
+    public static boolean checkName(String s) {
+        return s != null && s.length() > 0;
+    }
+
+    public static boolean checkCoord(int c) {
+        return c >= 0;
+    }
+
+    public static boolean checkDim(int d) {
+        return d > 0;
+    }
+
+    public static boolean checkFit(int origin, int dim) {
+        return origin + dim <= 1024; // World Size assumption
     }
 }
