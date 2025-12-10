@@ -23,9 +23,12 @@ public class InternalNode implements BinNode {
     }
 
     private boolean boxIntersectsObj(SpatialBox box, AirObject obj) {
-        return overlaps(box.getX(), box.getX() + box.getXDimension(), obj.getXorig(), obj.getXorig() + obj.getXwidth()) &&
-               overlaps(box.getY(), box.getY() + box.getYDimension(), obj.getYorig(), obj.getYorig() + obj.getYwidth()) &&
-               overlaps(box.getZ(), box.getZ() + box.getZDimension(), obj.getZorig(), obj.getZorig() + obj.getZwidth());
+        return overlaps(box.getX(), box.getX() + box.getXDimension(), 
+            obj.getXorig(), obj.getXorig() + obj.getXwidth()) &&
+               overlaps(box.getY(), box.getY() + box.getYDimension(), 
+                   obj.getYorig(), obj.getYorig() + obj.getYwidth()) &&
+               overlaps(box.getZ(), box.getZ() + box.getZDimension(), 
+                   obj.getZorig(), obj.getZorig() + obj.getZwidth());
     }
 
     @Override
@@ -44,7 +47,8 @@ public class InternalNode implements BinNode {
     }
 
     @Override
-    public BinNode remove(String name, SpatialBox box, RemovalContainer held, int level) {
+    public BinNode remove(String name, SpatialBox box, 
+        RemovalContainer held, int level) {
         int axis = level % 3;
         SpatialBox b1 = box.getFirstHalf(axis);
         SpatialBox b2 = box.getSecondHalf(axis);
@@ -152,7 +156,8 @@ public class InternalNode implements BinNode {
     }
 
     @Override
-    public void print(StringBuilder sb, SpatialBox box, int level, IntWrapper count) {
+    public void print(StringBuilder sb, SpatialBox box, 
+        int level, IntWrapper count) {
         StringBuilder space = new StringBuilder();
         for (int i = 0; i < level * 2; i++) space.append(" ");
         
@@ -173,9 +178,11 @@ public class InternalNode implements BinNode {
     }
 
     @Override
-    public void findIntersections(SpatialBox query, SpatialBox box, StringBuilder sb, IntWrapper visits, int level) {
+    public void findIntersections(SpatialBox query, SpatialBox box, 
+        StringBuilder sb, IntWrapper visits, int level) {
         visits.increment();
-        sb.append("In Internal node ").append(box.toString()).append(" ").append(level).append("\r\n");
+        sb.append("In Internal node ").append(box.toString()).append(" ")
+        .append(level).append("\r\n");
         
         int axis = level % 3;
         SpatialBox b1 = box.getFirstHalf(axis);
@@ -190,8 +197,11 @@ public class InternalNode implements BinNode {
     }
 
     private boolean boxesOverlap(SpatialBox a, SpatialBox b) {
-        return overlaps(a.getX(), a.getX() + a.getXDimension(), b.getX(), b.getX() + b.getXDimension()) &&
-               overlaps(a.getY(), a.getY() + a.getYDimension(), b.getY(), b.getY() + b.getYDimension()) &&
-               overlaps(a.getZ(), a.getZ() + a.getZDimension(), b.getZ(), b.getZ() + b.getZDimension());
+        return overlaps(a.getX(), a.getX() + a.getXDimension(), b.getX(), 
+            b.getX() + b.getXDimension()) &&
+               overlaps(a.getY(), a.getY() + a.getYDimension(), 
+                   b.getY(), b.getY() + b.getYDimension()) &&
+               overlaps(a.getZ(), a.getZ() + a.getZDimension(), b.getZ(), 
+                   b.getZ() + b.getZDimension());
     }
 }
