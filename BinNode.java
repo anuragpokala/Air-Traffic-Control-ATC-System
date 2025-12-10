@@ -1,101 +1,55 @@
 /**
  * Interface for Bintree nodes.
- *
- * @author {Your Name Here}
- * @version {Put Something Here}
+ * 
+ * @author Anurag Pokala (anuragp34) 
+ * @author Parth Mehta (pmehta24)
+ * @version 12/3/2025
  */
 public interface BinNode {
-    
-    /**
-     * Insert an AirObject into the node.
-     * @param a The AirObject
-     * @param x Node x origin
-     * @param y Node y origin
-     * @param z Node z origin
-     * @param w Node width
-     * @param h Node height
-     * @param d Node depth
-     * @param level Current level
-     * @return The updated node structure
-     */
-    BinNode insert(AirObject a, int x, int y, int z, int w, int h, int d, int level);
 
     /**
-     * Delete an AirObject from the node.
-     * @param a The AirObject
-     * @param x Node x origin
-     * @param y Node y origin
-     * @param z Node z origin
-     * @param w Node width
-     * @param h Node height
-     * @param d Node depth
-     * @param level Current level
-     * @return The updated node structure
+     * Insert an object into the tree.
+     * @param obj The object
+     * @param box The spatial bounds
+     * @param level The current level
+     * @return The updated node
      */
-    BinNode delete(AirObject a, int x, int y, int z, int w, int h, int d, int level);
+    BinNode insert(AirObject obj, SpatialBox box, int level);
 
     /**
-     * Get the number of objects in this node's subtree.
-     * @return The count
+     * Remove an object from the tree.
+     * @param name Name of object to remove
+     * @param box Spatial bounds
+     * @param held Container for removed object
+     * @param level Current level
+     * @return Updated node
      */
-    int count();
-    
-    /**
-     * Get the number of nodes in this subtree.
-     * @return The node count
-     */
-    int countNodes();
+    BinNode remove(String name, SpatialBox box, RemovalContainer held, int level);
 
     /**
-     * Check if this is a leaf node.
-     * @return True if leaf (Empty or Full leaf), False if Internal.
+     * Print the tree structure.
+     * @param sb StringBuilder for output
+     * @param box Spatial bounds
+     * @param level Current level
+     * @param count Counter for nodes
      */
-    boolean isLeaf();
+    void print(StringBuilder sb, SpatialBox box, int level, IntWrapper count);
 
     /**
-     * Print the node structure.
-     * @param x Node x origin
-     * @param y Node y origin
-     * @param z Node z origin
-     * @param w Node width
-     * @param h Node height
-     * @param d Node depth
+     * Report collisions.
+     * @param sb Output builder
+     * @param box Spatial bounds
      * @param level Current level
-     * @return String representation
      */
-    String print(int x, int y, int z, int w, int h, int d, int level);
-    
+    void findCollisions(StringBuilder sb, SpatialBox box, int level);
+
     /**
-     * Check for intersections with a query box.
-     * @param x Node x origin
-     * @param y Node y origin
-     * @param z Node z origin
-     * @param w Node width
-     * @param h Node height
-     * @param d Node depth
+     * Report intersections with a query box.
+     * @param query Query box
+     * @param box Current node box
+     * @param sb Output builder
+     * @param visits Counter for visited nodes
      * @param level Current level
-     * @param qx Query box x
-     * @param qy Query box y
-     * @param qz Query box z
-     * @param qw Query box width
-     * @param qh Query box height
-     * @param qd Query box depth
-     * @param sb StringBuilder to append results
-     * @return Number of nodes visited
      */
-    int intersect(int x, int y, int z, int w, int h, int d, int level,
-                   int qx, int qy, int qz, int qw, int qh, int qd, StringBuilder sb);
-                   
-    /**
-     * Report all collisions within this node's subtree.
-     * @param x Node x origin
-     * @param y Node y origin
-     * @param z Node z origin
-     * @param w Node width
-     * @param h Node height
-     * @param d Node depth
-     * @param level Current level
-     * @param sb StringBuilder to append results
-     */
-    void collisions(int x, int y, int z, int w, int h, int d, int level, StringBuilder sb);
+    void findIntersections(SpatialBox query, SpatialBox box, StringBuilder sb, IntWrapper visits, int level);
 }
