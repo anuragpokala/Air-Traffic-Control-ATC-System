@@ -1,8 +1,9 @@
 /**
  * Drone object with brand and engine count.
  *
- * @author {Your Name Here}
- * @version {Put Something Here}
+ * @author Anurag Pokala (anuragp34) 
+ * @author Parth Mehta (pmehta24)
+ * @version 12/3/2025
  */
 public class Drone extends AirObject {
 
