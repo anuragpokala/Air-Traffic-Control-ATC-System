@@ -1,30 +1,30 @@
 import java.util.Random;
 
 /**
- * Skip List implementation.
+ * Skip List implementation for AirObjects.
  * 
- * @param <K> Key type (must be Comparable)
- * @param <V> Value type
- * 
- * @author {Your Name Here}
- * @version {Put Something Here}
+ * @author Anurag Pokala (anuragp34) 
+ * @author Parth Mehta (pmehta24)
+ * @version 12/3/2025
  */
-public class SkipList<K extends Comparable<K>, V> {
+public class SkipList {
 
-    private SkipNode<K, V> head;
-    private int level;
-    private int size;
-    private Random rnd;
+    private static final int MAX_HEIGHT = 16;
+    
+    private SkipNode sentinel;
+    private int currentHeight;
+    private int numberOfNodes;
+    private Random rng;
 
     /**
      * Create a new Skip List.
      * @param r Random number generator to use
      */
     public SkipList(Random r) {
-        rnd = r;
-        level = -1;
-        size = 0;
-        head = new SkipNode<>(null, null, 0);
+        rng = (r == null) ? new Random() : r;
+        sentinel = new SkipNode(null, null, MAX_HEIGHT);
+        currentHeight = 1;
+        numberOfNodes = 0;
     }
 
     /**
@@ -32,26 +32,12 @@ public class SkipList<K extends Comparable<K>, V> {
      * Pick a level using a geometric distribution.
      * @return The level
      */
-    private int randomLevel() {
-        int lev = 0;
-        while (Math.abs(rnd.nextInt()) % 2 == 0) {
-            lev++;
+    private int pickLevel() {
+        int lvl = 1;
+        while (lvl < MAX_HEIGHT && Math.abs(rng.nextInt()) % 2 == 0) {
+            lvl++;
         }
-        return lev;
-    }
-
-    /**
-     * Adjust head node to accommodate a new level.
-     * @param newLevel The new level needed
-     */
-    @SuppressWarnings("unchecked")
-    private void adjustHead(int newLevel) {
-        SkipNode<K, V> oldHead = head;
-        head = new SkipNode<>(null, null, newLevel);
-        for (int i = 0; i <= oldHead.getLevel(); i++) {
-            head.setForward(i, oldHead.getForward(i));
-        }
-        level = newLevel;
+        return lvl;
     }
 
     /**
@@ -59,50 +45,69 @@ public class SkipList<K extends Comparable<K>, V> {
      * @param key The key to search for
      * @return The value, or null if not found
      */
-    public V find(K key) {
-        if (size == 0) {
-            return null;
-        }
-        SkipNode<K, V> curr = head;
-        for (int i = level; i >= 0; i--) {
-            while (curr.getForward(i) != null &&
-                   curr.getForward(i).getKey().compareTo(key) < 0) {
-                curr = curr.getForward(i);
+    public AirObject search(String key) {
+        if (key == null) return null;
+        
+        SkipNode curr = sentinel;
+        for (int i = currentHeight - 1; i >= 0; i--) {
+            while (curr.getNext(i) != null) {
+                String nextKey = curr.getNext(i).getKey();
+                if (nextKey == null || nextKey.compareTo(key) >= 0) {
+                    break;
+                }
+                curr = curr.getNext(i);
             }
-        }
-        curr = curr.getForward(0);
-        if (curr != null && curr.getKey().compareTo(key) == 0) {
-            return curr.getValue();
+            if (curr.getNext(i) != null && curr.getNext(i).getKey().equals(key)) {
+                return curr.getNext(i).getValue();
+            }
         }
         return null;
     }
 
     /**
-     * Insert a key-value pair.
-     * @param key The key
+     * Insert a value.
      * @param value The value
+     * @return true if inserted, false if duplicate
      */
-    @SuppressWarnings("unchecked")
-    public void insert(K key, V value) {
-        int newLevel = randomLevel();
-        if (newLevel > level) {
-            adjustHead(newLevel);
-        }
-        SkipNode<K, V>[] update = new SkipNode[level + 1];
-        SkipNode<K, V> curr = head;
-        for (int i = level; i >= 0; i--) {
-            while (curr.getForward(i) != null &&
-                   curr.getForward(i).getKey().compareTo(key) < 0) {
-                curr = curr.getForward(i);
+    public boolean insert(AirObject value) {
+        if (value == null) return false;
+        String key = value.getName();
+        
+        SkipNode[] preds = new SkipNode[MAX_HEIGHT];
+        SkipNode curr = sentinel;
+
+        for (int i = currentHeight - 1; i >= 0; i--) {
+            while (true) {
+                SkipNode next = curr.getNext(i);
+                if (next == null || next.getKey().compareTo(key) >= 0) {
+                    break;
+                }
+                curr = next;
             }
-            update[i] = curr;
+            preds[i] = curr;
         }
-        SkipNode<K, V> newNode = new SkipNode<>(key, value, newLevel);
-        for (int i = 0; i <= newLevel; i++) {
-            newNode.setForward(i, update[i].getForward(i));
-            update[i].setForward(i, newNode);
+
+        SkipNode nextNode = curr.getNext(0);
+        if (nextNode != null && nextNode.getKey().equals(key)) {
+            return false; 
         }
-        size++;
+
+        int newLvl = pickLevel();
+        if (newLvl > currentHeight) {
+            for (int i = currentHeight; i < newLvl; i++) {
+                preds[i] = sentinel;
+            }
+            currentHeight = newLvl;
+        }
+
+        SkipNode nodeToInsert = new SkipNode(key, value, newLvl);
+        for (int i = 0; i < newLvl; i++) {
+            nodeToInsert.setNext(i, preds[i].getNext(i));
+            preds[i].setNext(i, nodeToInsert);
+        }
+        
+        numberOfNodes++;
+        return true;
     }
 
     /**
@@ -110,47 +115,88 @@ public class SkipList<K extends Comparable<K>, V> {
      * @param key The key to remove
      * @return The removed value, or null if not found
      */
-    @SuppressWarnings("unchecked")
-    public V remove(K key) {
-        if (size == 0) {
-            return null;
-        }
-        SkipNode<K, V>[] update = new SkipNode[level + 1];
-        SkipNode<K, V> curr = head;
-        for (int i = level; i >= 0; i--) {
-            while (curr.getForward(i) != null &&
-                   curr.getForward(i).getKey().compareTo(key) < 0) {
-                curr = curr.getForward(i);
+    public AirObject remove(String key) {
+        if (key == null) return null;
+
+        SkipNode[] preds = new SkipNode[MAX_HEIGHT];
+        SkipNode curr = sentinel;
+
+        for (int i = currentHeight - 1; i >= 0; i--) {
+            while (true) {
+                SkipNode next = curr.getNext(i);
+                if (next == null || next.getKey().compareTo(key) >= 0) {
+                    break;
+                }
+                curr = next;
             }
-            update[i] = curr;
+            preds[i] = curr;
         }
-        curr = curr.getForward(0);
-        if (curr == null || curr.getKey().compareTo(key) != 0) {
+
+        SkipNode target = curr.getNext(0);
+        if (target == null || !target.getKey().equals(key)) {
             return null;
         }
-        V val = curr.getValue();
-        for (int i = 0; i <= curr.getLevel(); i++) {
-            update[i].setForward(i, curr.getForward(i));
+
+        for (int i = 0; i < currentHeight; i++) {
+            if (preds[i].getNext(i) != target) {
+                break;
+            }
+            preds[i].setNext(i, target.getNext(i));
         }
-        size--;
-        return val;
+
+        while (currentHeight > 1 && sentinel.getNext(currentHeight - 1) == null) {
+            currentHeight--;
+        }
+        
+        numberOfNodes--;
+        return target.getValue();
+    }
+    
+    /**
+     * Dump the skip list contents within a range.
+     * @param sb StringBuilder to append to
+     * @param min Minimum key (inclusive)
+     * @param max Maximum key (inclusive)
+     */
+    public void dumpRange(StringBuilder sb, String min, String max) {
+        SkipNode curr = sentinel.getNext(0);
+        while (curr != null) {
+            String k = curr.getKey();
+            if (k.toLowerCase().compareTo(min.toLowerCase()) >= 0 && 
+                k.toLowerCase().compareTo(max.toLowerCase()) <= 0) {
+                sb.append(curr.getValue().toString()).append("\n");
+            }
+            curr = curr.getNext(0);
+        }
     }
 
     /**
-     * Get the number of elements.
-     * @return The size
+     * Get the head (sentinel) node.
+     * @return The sentinel node
      */
-    public int getSize() {
-        return size;
+    public SkipNode getHead() {
+        return sentinel;
     }
 
     /**
-     * Get the head node (for iteration).
-     * @return The head node
+     * Dump the skip list contents.
+     * @return String description
      */
-    public SkipNode<K, V> getHead() {
-        return head;
+    public String describe() {
+        if (numberOfNodes == 0) {
+            return "SkipList is empty";
+        }
+        StringBuilder sb = new StringBuilder();
+        sb.append("Node has depth ").append(currentHeight).append(", Value (null)\n");
+        SkipNode curr = sentinel.getNext(0);
+        int count = 0;
+        while (curr != null) {
+            sb.append("Node has depth ").append(curr.getLevels())
+              .append(", Value (").append(curr.getValue().toString()).append(")\n");
+            curr = curr.getNext(0);
+            count++;
+        }
+        sb.append(count).append(" skiplist nodes printed\n");
+        return sb.toString();
     }
-    
-    
 }
