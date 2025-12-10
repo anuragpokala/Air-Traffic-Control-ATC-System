@@ -91,16 +91,16 @@ public class WorldDB implements ATC {
         if (!AirObject.checkCoord(x) 
             || !AirObject.checkCoord(y) 
             || !AirObject.checkCoord(z)) {
-        return false;
-    }
+            return false;
+        }
 
-    if (!AirObject.checkDim(w) 
+        if (!AirObject.checkDim(w) 
             || !AirObject.checkDim(h) 
             || !AirObject.checkDim(d)) {
-        return false;
-    }
+            return false;
+        }
 
-         return AirObject.checkFit(x, w) && AirObject.checkFit(y, h) 
+             return AirObject.checkFit(x, w) && AirObject.checkFit(y, h) 
              && AirObject.checkFit(z, d);
     }
 
