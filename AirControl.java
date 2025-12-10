@@ -1,5 +1,9 @@
 /**
- * {Project Description Here}
+ * This project implements a spatial database for an Air Traffic Control system.
+ * It manages various air objects (Airplanes, Balloons, Birds, Drones, Rockets)
+ * using a SkipList for name-based indexing and a Bintree for spatial indexing.
+ * The system supports adding, removing, and querying objects, as well as detecting
+ * collisions and intersections within a 3D airspace.
  */
 
 import java.io.IOException;
