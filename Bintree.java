@@ -1,76 +1,94 @@
 /**
- * Bintree wrapper class.
- *
- * @author {Your Name Here}
- * @version {Put Something Here}
+ * The Bintree structure for spatial indexing.
+ * 
+ * @author Anurag Pokala (anuragp34) 
+ * @author Parth Mehta (pmehta24)
+ * @version 12/3/2025
  */
 public class Bintree {
-    
+    private SpatialBox worldBox;
     private BinNode root;
-    private final int worldSize = 1024;
-    
-    public Bintree() {
-        root = EmptyNode.EMPTY;
-    }
-    
+
     /**
-     * Insert an AirObject into the tree.
-     * @param a The object
+     * Initialize Bintree with a given size.
+     * @param size World cubic size
      */
-    public void insert(AirObject a) {
-        root = root.insert(a, 0, 0, 0, worldSize, worldSize, worldSize, 0);
+    public Bintree(int size) {
+        worldBox = new SpatialBox(0, 0, 0, size, size, size);
+        root = EmptyNode.THE_NODE;
     }
-    
+
     /**
-     * Delete an AirObject from the tree.
-     * @param a The object (must have same properties as inserted, or at least pass spatial check)
-     * Note: BinNode delete uses name to find in the list, but requires traversing to the correct leaf.
-     * Since efficient traversal requires coordinates, we assume 'a' has correct coordinates.
+     * Reset the tree.
      */
-    public void delete(AirObject a) {
-        root = root.delete(a, 0, 0, 0, worldSize, worldSize, worldSize, 0);
+    public void clear() {
+        root = EmptyNode.THE_NODE;
     }
-    
+
     /**
-     * Print the tree structure in preorder.
-     * @return String representation
+     * Insert an object.
+     * @param funcObject The object
+     */
+    public void insert(AirObject funcObject) {
+        root = root.insert(funcObject, worldBox, 0);
+    }
+
+    /**
+     * Remove an object by name.
+     * @param name The name
+     * @return The removed object or null
+     */
+    public AirObject remove(String name) {
+        RemovalContainer holder = new RemovalContainer();
+        root = root.remove(name, worldBox, holder, 0);
+        return holder.get();
+    }
+
+    /**
+     * Generate print string.
+     * @return The string
      */
     public String print() {
-        return root.print(0, 0, 0, worldSize, worldSize, worldSize, 0) + 
-               root.countNodes() + " Bintree nodes printed\n";
+        StringBuilder b = new StringBuilder();
+        IntWrapper cnt = new IntWrapper();
+        root.print(b, worldBox, 0, cnt);
+        b.append(cnt.getValue()).append(" Bintree nodes printed\r\n");
+        return b.toString();
     }
-    
+
     /**
-     * Find intersections with a query box.
-     * @param x Box x
-     * @param y Box y
-     * @param z Box z
-     * @param xw Box width
-     * @param yw Box height
-     * @param zw Box depth
-     * @return String result
-     */
-    public String intersect(int x, int y, int z, int xw, int yw, int zw) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("The following objects intersect (")
-          .append(x).append(", ").append(y).append(", ").append(z).append(", ")
-          .append(xw).append(", ").append(yw).append(", ").append(zw).append(")\n");
-          
-        int visited = root.intersect(0, 0, 0, worldSize, worldSize, worldSize, 0,
-                                     x, y, z, xw, yw, zw, sb);
-                                     
-        sb.append(visited).append(" nodes were visited in the bintree\n");
-        return sb.toString();
-    }
-    
-    /**
-     * Report all collisions.
-     * @return String result
+     * Check collisions.
+     * @return Collision report
      */
     public String collisions() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("The following collisions exist in the database:\n");
-        root.collisions(0, 0, 0, worldSize, worldSize, worldSize, 0, sb);
-        return sb.toString();
+        StringBuilder b = new StringBuilder();
+        b.append("The following collisions exist in the database:\n");
+        root.findCollisions(b, worldBox, 0);
+        return b.toString();
+    }
+
+    /**
+     * Find intersections with a box.
+     * @param x X
+     * @param y Y
+     * @param z Z
+     * @param w Width
+     * @param h Height
+     * @param d Depth
+     * @return Intersection report
+     */
+    public String intersect(int x, int y, int z, int w, int h, int d) {
+        SpatialBox query = new SpatialBox(x, y, z, w, h, d);
+        StringBuilder b = new StringBuilder();
+        b.append("The following objects intersect ").append(query.toString()).append("\n");
+        
+        StringBuilder content = new StringBuilder();
+        IntWrapper visits = new IntWrapper();
+        
+        root.findIntersections(query, worldBox, content, visits, 0);
+        
+        b.append(content);
+        b.append(visits.getValue()).append(" nodes were visited in the bintree\n");
+        return b.toString();
     }
 }
