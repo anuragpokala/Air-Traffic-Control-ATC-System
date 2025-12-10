@@ -1,61 +1,49 @@
 /**
- * Flyweight Empty Node.
- *
- * @author {Your Name Here}
- * @version {Put Something Here}
+ * Represents an empty node in the Bintree.
+ * Flyweight pattern (Singleton).
+ * 
+ * @author Anurag Pokala (anuragp34) 
+ * @author Parth Mehta (pmehta24)
+ * @version 12/3/2025
  */
 public class EmptyNode implements BinNode {
-    
-    public static final EmptyNode EMPTY = new EmptyNode();
 
-    private EmptyNode() {}
+    public static final EmptyNode THE_NODE = new EmptyNode();
 
-    @Override
-    public BinNode insert(AirObject a, int x, int y, int z, int w, int h, int d, int level) {
-        LeafNode node = new LeafNode();
-        return node.insert(a, x, y, z, w, h, d, level);
+    private EmptyNode() {
     }
 
     @Override
-    public BinNode delete(AirObject a, int x, int y, int z, int w, int h, int d, int level) {
-        return this;
+    public BinNode insert(AirObject obj, SpatialBox box, int level) {
+        return new LeafNode(obj);
     }
 
     @Override
-    public int count() {
-        return 0;
+    public BinNode remove(String name, SpatialBox box, RemovalContainer held, int level) {
+        return this; 
     }
 
     @Override
-    public int countNodes() {
-        return 1;
+    public void print(StringBuilder sb, SpatialBox box, int level, IntWrapper count) {
+        sb.append(getIndent(level)).append("E ").append(box.toString())
+          .append(" ").append(level).append("\r\n");
+        count.increment();
     }
 
     @Override
-    public boolean isLeaf() {
-        return true;
+    public void findCollisions(StringBuilder sb, SpatialBox box, int level) {
     }
 
     @Override
-    public String print(int x, int y, int z, int w, int h, int d, int level) {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < level; i++) {
-            sb.append("  ");
+    public void findIntersections(SpatialBox query, SpatialBox box, StringBuilder sb, IntWrapper visits, int level) {
+        visits.increment();
+    }
+
+    private String getIndent(int level) {
+        StringBuilder s = new StringBuilder();
+        for (int i = 0; i < level * 2; i++) {
+            s.append(" ");
         }
-        sb.append("E (").append(x).append(", ").append(y).append(", ").append(z)
-          .append(", ").append(w).append(", ").append(h).append(", ").append(d)
-          .append(") ").append(count()).append("\n");
-        return sb.toString();
-    }
-
-    @Override
-    public int intersect(int x, int y, int z, int w, int h, int d, int level, 
-                         int qx, int qy, int qz, int qw, int qh, int qd, StringBuilder sb) {
-        return 1;
-    }
-
-    @Override
-    public void collisions(int x, int y, int z, int w, int h, int d, int level, StringBuilder sb) {
-        // No collisions in empty node
+        return s.toString();
     }
 }
