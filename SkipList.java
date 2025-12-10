@@ -57,7 +57,8 @@ public class SkipList {
                 }
                 curr = curr.getNext(i);
             }
-            if (curr.getNext(i) != null && curr.getNext(i).getKey().equals(key)) {
+            if (curr.getNext(i) != null && curr.getNext(i)
+                .getKey().equals(key)) {
                 return curr.getNext(i).getValue();
             }
         }
@@ -144,7 +145,8 @@ public class SkipList {
             preds[i].setNext(i, target.getNext(i));
         }
 
-        while (currentHeight > 1 && sentinel.getNext(currentHeight - 1) == null) {
+        while (currentHeight > 1 && sentinel
+            .getNext(currentHeight - 1) == null) {
             currentHeight--;
         }
         
@@ -187,12 +189,14 @@ public class SkipList {
             return "SkipList is empty";
         }
         StringBuilder sb = new StringBuilder();
-        sb.append("Node has depth ").append(currentHeight).append(", Value (null)\n");
+        sb.append("Node has depth ").append(currentHeight)
+        .append(", Value (null)\n");
         SkipNode curr = sentinel.getNext(0);
         int count = 0;
         while (curr != null) {
             sb.append("Node has depth ").append(curr.getLevels())
-              .append(", Value (").append(curr.getValue().toString()).append(")\n");
+              .append(", Value (").append(curr.
+                  getValue().toString()).append(")\n");
             curr = curr.getNext(0);
             count++;
         }
