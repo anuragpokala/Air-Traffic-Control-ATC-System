@@ -34,7 +34,8 @@ public class WorldDB implements ATC {
     private boolean verifySpecifics(AirObject a) {
         if (a instanceof AirPlane) {
             AirPlane p = (AirPlane)a;
-            return AirObject.checkName(p.getCarrier()) && p.getFlightNumber() > 0 && p.getNumEngines() > 0;
+            return AirObject.checkName(p.getCarrier()) 
+                && p.getFlightNumber() > 0 && p.getNumEngines() > 0;
         }
         if (a instanceof Balloon) {
             Balloon b = (Balloon)a;
@@ -56,28 +57,51 @@ public class WorldDB implements ATC {
     }
 
     private boolean verifyObject(AirObject a) {
-        if (a == null) return false;
-        if (!AirObject.checkName(a.getName())) return false;
-        
-        if (!AirObject.checkCoord(a.getXorig()) || 
-            !AirObject.checkCoord(a.getYorig()) || 
-            !AirObject.checkCoord(a.getZorig())) return false;
-            
-        if (!AirObject.checkDim(a.getXwidth()) || 
-            !AirObject.checkDim(a.getYwidth()) || 
-            !AirObject.checkDim(a.getZwidth())) return false;
-            
-        if (!AirObject.checkFit(a.getXorig(), a.getXwidth()) ||
-            !AirObject.checkFit(a.getYorig(), a.getYwidth()) ||
-            !AirObject.checkFit(a.getZorig(), a.getZwidth())) return false;
+        if (a == null) {
+            return false;
+        }
+
+        if (!AirObject.checkName(a.getName())) {
+            return false;
+        }
+
+        if (!AirObject.checkCoord(a.getXorig()) 
+                || !AirObject.checkCoord(a.getYorig()) 
+                || !AirObject.checkCoord(a.getZorig())) {
+            return false;
+        }
+
+        if (!AirObject.checkDim(a.getXwidth()) 
+                || !AirObject.checkDim(a.getYwidth()) 
+                || !AirObject.checkDim(a.getZwidth())) {
+            return false;
+        }
+
+        if (!AirObject.checkFit(a.getXorig(), a.getXwidth()) 
+                || !AirObject.checkFit(a.getYorig(), a.getYwidth()) 
+                || !AirObject.checkFit(a.getZorig(), a.getZwidth())) {
+            return false;
+        }
+
 
         return verifySpecifics(a);
     }
 
     private boolean verifyBox(int x, int y, int z, int w, int h, int d) {
-         if (!AirObject.checkCoord(x) || !AirObject.checkCoord(y) || !AirObject.checkCoord(z)) return false;
-         if (!AirObject.checkDim(w) || !AirObject.checkDim(h) || !AirObject.checkDim(d)) return false;
-         return AirObject.checkFit(x, w) && AirObject.checkFit(y, h) && AirObject.checkFit(z, d);
+        if (!AirObject.checkCoord(x) 
+            || !AirObject.checkCoord(y) 
+            || !AirObject.checkCoord(z)) {
+        return false;
+    }
+
+    if (!AirObject.checkDim(w) 
+            || !AirObject.checkDim(h) 
+            || !AirObject.checkDim(d)) {
+        return false;
+    }
+
+         return AirObject.checkFit(x, w) && AirObject.checkFit(y, h) 
+             && AirObject.checkFit(z, d);
     }
 
     public void clear() {
@@ -115,7 +139,8 @@ public class WorldDB implements ATC {
         if (start.compareTo(end) > 0) return null;
         
         StringBuilder b = new StringBuilder();
-        b.append("Found these records in the range ").append(start).append(" to ").append(end).append("\n");
+        b.append("Found these records in the range ").append(start)
+        .append(" to ").append(end).append("\n");
         internalList.dumpRange(b, start, end);
         return b.toString();
     }
