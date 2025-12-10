@@ -79,9 +79,12 @@ public class LeafNode implements BinNode {
     }
 
     private boolean objIntersectsBox(AirObject obj, SpatialBox box) {
-        return overlaps(obj.getXorig(), obj.getXorig() + obj.getXwidth(), box.getX(), box.getX() + box.getXDimension()) &&
-               overlaps(obj.getYorig(), obj.getYorig() + obj.getYwidth(), box.getY(), box.getY() + box.getYDimension()) &&
-               overlaps(obj.getZorig(), obj.getZorig() + obj.getZwidth(), box.getZ(), box.getZ() + box.getZDimension());
+        return overlaps(obj.getXorig(), obj.getXorig() + obj.getXwidth(), 
+            box.getX(), box.getX() + box.getXDimension()) &&
+               overlaps(obj.getYorig(), obj.getYorig() + obj.getYwidth(), 
+                   box.getY(), box.getY() + box.getYDimension()) &&
+               overlaps(obj.getZorig(), obj.getZorig() + obj.getZwidth(), 
+                   box.getZ(), box.getZ() + box.getZDimension());
     }
 
     @Override
@@ -110,7 +113,8 @@ public class LeafNode implements BinNode {
     }
 
     @Override
-    public BinNode remove(String name, SpatialBox box, RemovalContainer held, int level) {
+    public BinNode remove(String name, SpatialBox box, 
+        RemovalContainer held, int level) {
         int idx = findIndex(name);
         if (idx != -1) {
             if (held != null) held.set(data[idx]);
@@ -128,31 +132,39 @@ public class LeafNode implements BinNode {
     }
 
     @Override
-    public void print(StringBuilder sb, SpatialBox box, int level, IntWrapper countVar) {
+    public void print(StringBuilder sb, SpatialBox box, 
+        int level, IntWrapper countVar) {
         StringBuilder space = new StringBuilder();
         for (int i = 0; i < level * 2; i++) space.append(" ");
         
-        sb.append(space).append("Leaf with ").append(count).append(" objects ")
-          .append(box.toString()).append(" ").append(level).append("\r\n");
+        sb.append(space).append("Leaf with ").append(count)
+        .append(" objects ")
+          .append(box.toString()).append(" ")
+          .append(level).append("\r\n");
         
         for (int i = 0; i < count; i++) {
-            sb.append(space).append("(").append(data[i].toString()).append(")\r\n");
+            sb.append(space).append("(").append(data[i]
+                .toString()).append(")\r\n");
         }
         countVar.increment();
     }
 
     @Override
     public void findCollisions(StringBuilder sb, SpatialBox box, int level) {
-        sb.append("In leaf node ").append(box.toString()).append(" ").append(level).append("\r\n");
+        sb.append("In leaf node ").append(box.toString()).append(" ")
+        .append(level).append("\r\n");
         for (int i = 0; i < count - 1; i++) {
             for (int j = i + 1; j < count; j++) {
                 AirObject a = data[i];
                 AirObject b = data[j];
                 
                 boolean boxesTouch = 
-                    overlaps(a.getXorig(), a.getXorig() + a.getXwidth(), b.getXorig(), b.getXorig() + b.getXwidth()) &&
-                    overlaps(a.getYorig(), a.getYorig() + a.getYwidth(), b.getYorig(), b.getYorig() + b.getYwidth()) &&
-                    overlaps(a.getZorig(), a.getZorig() + a.getZwidth(), b.getZorig(), b.getZorig() + b.getZwidth());
+                    overlaps(a.getXorig(), a.getXorig() + a.getXwidth(), 
+                        b.getXorig(), b.getXorig() + b.getXwidth()) &&
+                    overlaps(a.getYorig(), a.getYorig() + a.getYwidth(), 
+                        b.getYorig(), b.getYorig() + b.getYwidth()) &&
+                    overlaps(a.getZorig(), a.getZorig() + a.getZwidth(), 
+                        b.getZorig(), b.getZorig() + b.getZwidth());
 
                 if (boxesTouch) {
                     int colX = Math.max(a.getXorig(), b.getXorig());
@@ -169,12 +181,15 @@ public class LeafNode implements BinNode {
     }
 
     @Override
-    public void findIntersections(SpatialBox query, SpatialBox box, StringBuilder sb, IntWrapper visits, int level) {
+    public void findIntersections(SpatialBox query, SpatialBox box, 
+        StringBuilder sb, IntWrapper visits, int level) {
         visits.increment();
-        sb.append("In leaf node ").append(box.toString()).append(" ").append(level).append("\r\n");
+        sb.append("In leaf node ").append(box.toString())
+        .append(" ").append(level).append("\r\n");
         for (int i = 0; i < count; i++) {
             AirObject obj = data[i];
-            if (objIntersectsBox(obj, query) && box.encloses(obj.getXorig(), obj.getYorig(), obj.getZorig())) {
+            if (objIntersectsBox(obj, query) && box
+                .encloses(obj.getXorig(), obj.getYorig(), obj.getZorig())) {
                 sb.append(obj.toString()).append("\r\n");
             }
         }
@@ -186,7 +201,8 @@ public class LeafNode implements BinNode {
     void addDirect(AirObject o) {
         if (count >= data.length) expand();
         int idx = findPos(o.getName());
-        if (idx < count) System.arraycopy(data, idx, data, idx + 1, count - idx);
+        if (idx < count) System.arraycopy(data, idx, data, idx + 1, 
+            count - idx);
         data[idx] = o;
         count++;
     }
